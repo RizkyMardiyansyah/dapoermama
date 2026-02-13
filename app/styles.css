@@ -24,7 +24,7 @@
     border-color: var(--primary-color);
   }
   .dpmama-logo{
-    height: 40px;
+    height: 35px;
   }
   @keyframes slide {
     0% { transform: translateX(0%); }
