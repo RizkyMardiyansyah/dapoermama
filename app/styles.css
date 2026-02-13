@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #FC9C07;
+  }
+  body {
+    color: rgba(0,0,0, .2);
+    font-family: 'Poppins', sans-serif;
+  }
+  .primary-color {
+    color: var(--primary-color);
+  }
+  
+  .btn {
+    background-color: var(--primary-color);
+  }
+  .cart-ttl{
+    justify-content: center;
+  }
+  .bg-primary{
+    background-color: var(--primary-color);
+  }
+  .border-primary{
+    border-color: var(--primary-color);
+  }
+  .dpmama-logo{
+    height: 40px;
+  }
+  @keyframes slide {
+    0% { transform: translateX(0%); }
+    33% { transform: translateX(-100%); }
+    66% { transform: translateX(-200%); }
+    100% { transform: translateX(0%); }
+  }
+
+  .custom-pagination .swiper-pagination-bullet {
+    background-color: #d1d5db;
+    opacity: 1;
+  }
+  
+  .custom-pagination .swiper-pagination-bullet-active {
+    background-color: var(--primary-color);
+    width: 20px;
+    border-radius: 9999px;
+  }
+  
