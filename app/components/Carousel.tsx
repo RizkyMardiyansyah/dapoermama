@@ -43,13 +43,6 @@ export default function Carousel() {
 
         <SwiperSlide>
           <img
-            src="img/semprit.png"
-            className="w-full h-full object-cover"
-          />
-        </SwiperSlide>
-
-        <SwiperSlide>
-          <img
             src="img/bawang.png"
             className="w-full h-full object-cover"
           />
