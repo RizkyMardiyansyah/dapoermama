@@ -26,7 +26,7 @@ export default function Cart({
   const [phone, setPhone] = useState("")
 
   const handleSubmit = async () => {
-    if (!name || !phone) {
+    if (!name.trim() || !phone.trim()) {
       Swal.fire({
         icon: "warning",
         title: "Form belum lengkap",
@@ -71,6 +71,8 @@ export default function Cart({
 
       setCart([])
       sessionStorage.removeItem("cart")
+      setName("")
+      setPhone("")
     } catch (err) {
       Swal.fire({
         icon: "error",
@@ -90,19 +92,70 @@ export default function Cart({
     </h2>
     <hr className="my-6"/>
     <div className="mt-6 space-y-3">
-      <input
-        placeholder="Masukan nama kamu"
-        className="w-full border border-gray-300 text-gray-700 placeholder:text-gray-500 p-3 rounded-xl transition-all focus:border-[var(--primary-color)] focus:ring-2 focus:ring-[var(--primary-color)] focus:outline-none"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        />
+    <div className="relative">
+  <input
+    id="name"
+    type="text"
+    value={name}
+    onChange={(e) => setName(e.target.value)}
+    required
+    placeholder=" "
+    className="peer w-full border border-gray-300 text-gray-700 p-3 rounded-xl focus:border-[var(--primary-color)] focus:ring-2 focus:ring-[var(--primary-color)] focus:outline-none"
+  />
 
-        <input
-        placeholder="Masukan nomor hp kamu"
-        className="w-full border border-gray-300 text-gray-700 placeholder:text-gray-500 p-3 rounded-xl transition-all focus:border-[var(--primary-color)] focus:ring-2 focus:ring-[var(--primary-color)] focus:outline-none"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        />
+  <label
+    htmlFor="name"
+    className="
+      absolute left-3 
+      top-1/2 -translate-y-1/2
+      text-gray-500 bg-white px-1
+      transition-all duration-200
+      peer-placeholder-shown:top-1/2 
+      peer-placeholder-shown:-translate-y-1/2 
+      peer-placeholder-shown:text-base 
+      peer-focus:-top-2 
+      peer-focus:translate-y-0 
+      peer-focus:text-sm 
+      peer-focus:text-[var(--primary-color)]
+      peer-valid:-top-2 
+      peer-valid:translate-y-0 
+      peer-valid:text-sm
+      cursor-text
+    "
+  >
+    Nama <span className="text-red-500">*</span>
+  </label>
+</div>
+<div className="relative">
+  <input
+    id="phone"
+    type="text"
+    value={phone}
+    onChange={(e) => setPhone(e.target.value)}
+    required
+    placeholder=" "
+    className="peer w-full border border-gray-300 text-gray-700 p-3 rounded-xl focus:border-[var(--primary-color)] focus:ring-2 focus:ring-[var(--primary-color)] focus:outline-none"
+  />
+
+  <label
+    htmlFor="phone"
+    className="absolute left-3 top-1/2 -translate-y-1/2 bg-white px-1 text-gray-500 transition-all duration-200
+      peer-placeholder-shown:top-1/2 
+      peer-placeholder-shown:-translate-y-1/2 
+      peer-placeholder-shown:text-base 
+      peer-focus:-top-2 
+      peer-focus:translate-y-0 
+      peer-focus:text-sm 
+      peer-focus:text-[var(--primary-color)]
+      peer-valid:-top-2 
+      peer-valid:translate-y-0 
+      peer-valid:text-sm
+      cursor-text"
+  >
+    Nomor HP <span className="text-red-500">*</span>
+  </label>
+</div>
+
       </div>
       <hr className="my-6"/>
         {cart.length === 0 && (
