@@ -46,7 +46,7 @@ export default function Home() {
     { id: 12, name: "coklat mete - 500g", price: 85000, image: "img/coklatMete.jpg" },
     { id: 13, name: "stik keju - 1kg", price: 90000, image: "img/stikKeju.jpg" },
     { id: 14, name: "kue bawang - 1kg", price: 90000, image: "https://i.pinimg.com/1200x/e3/22/06/e32206b1ebbc475527e822638541d1cf.jpg" },
-    { id: 15, name: "telur gabus - 1kg", price: 105000, image: "img/kueGabus.png" },
+    { id: 15, name: "telur gabus - 1kg", price: 105000, image: "https://i.pinimg.com/736x/43/76/56/437656bceaa5bd2cf0a1bed2752d0a76.jpg" },
     { id: 16, name: "biji ketapang - 500g", price: 55000, image: "https://i.pinimg.com/736x/f4/91/e5/f491e58dcb05bced16feda037fad03c9.jpg" },
     { id: 17, name: "kacang umpet pedas - 500g", price: 45000, image: "https://i.pinimg.com/1200x/d1/82/4d/d1824da486a99bbf878097bcd50f861d.jpg" },
     { id: 18, name: "kacang umpet coklat - 500g", price: 45000, image: "https://i.pinimg.com/736x/cf/53/9e/cf539edbb8aa21beb88dd8c49e930030.jpg" }
