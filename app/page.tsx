@@ -6,6 +6,12 @@ import Cart from "./components/Cart"
 import Carousel from "./components/Carousel"
 import { LogIn } from "lucide-react"
 import "./styles.css"
+import html2canvas from "html2canvas"
+import { useRef } from "react"
+import JSZip from "jszip"
+import { saveAs } from "file-saver"
+import Swal from "sweetalert2"
+import { color } from "html2canvas/dist/types/css/types/color"
 
 export interface Cake {
   id: number
@@ -24,12 +30,18 @@ export default function Home() {
 
   const [cart, setCart] = useState<CartItem[]>([])
   const [mounted, setMounted] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // Login states
   const [loggedIn, setLoggedIn] = useState(false)
   const [showLogin, setShowLogin] = useState(false)
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+
+  const [orders, setOrders] = useState<any[]>([])
+  const [showCards, setShowCards] = useState(false)
+
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const cakeList: Cake[] = [
     { id: 1, name: "nastar semprit - 500g", price: 80000, image: "img/nastarSemprit.png" },
@@ -91,26 +103,131 @@ export default function Home() {
 
   const handleLogin = () => {
     if (username === adminUser.username && password === adminUser.password) {
-      setLoggedIn(true)
+      setLoggedIn(true);              // tandai user sudah login
+      setShowLogin(false);            // tutup modal login
+      setUsername("");                // bersihkan input
+      setPassword("");
+  
+      // buka Google Sheet setelah login
       window.open(
         "https://docs.google.com/spreadsheets/d/1SY-9u7YXVpwnXiHEQgyY9paBdbn8-PtyaKbTLe86Yuk",
         "_blank"
-      )
-
+      );
     } else {
-      alert("Username atau password salah!")
+      alert("Username atau password salah!");
     }
+  };
+
+  const downloadAllCards = async () => {
+
+    const zip = new JSZip()
+
+    for (let i = 0; i < cardRefs.current.length; i++) {
+
+      const element = cardRefs.current[i]
+      if (!element) continue
+
+      const canvas = await html2canvas(element)
+
+      const imgData = canvas.toDataURL("image/png")
+
+      const base64 = imgData.split(",")[1]
+
+      const filename = orders[i]?.name || `order-${i + 1}`
+
+      zip.file(`${filename}.png`, base64, { base64: true })
+    }
+
+    const content = await zip.generateAsync({ type: "blob" })
+
+    saveAs(content, "pesanan.zip")
+
+    Swal.fire({
+      icon: "success",
+      title: "Berhasil",
+      text: "Kartu pesanan berhasil dibuat dan diunduh"
+    })
   }
+
+
+  const loadOrders = async () => {
+
+    try {
+
+      Swal.fire({
+        title: "Sedang membuat kartu pesanan...",
+        text: "Mohon tunggu beberapa saat",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      })
+
+      const res = await fetch("/api/order")
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch orders")
+      }
+
+      const json = await res.json()
+
+      const data = Array.isArray(json) ? json : json.data || []
+
+      if (!data.length) {
+
+        Swal.fire({
+          icon: "info",
+          title: "Tidak ada pesanan",
+          text: "Data pesanan belum tersedia"
+        })
+
+        return
+      }
+
+      setOrders(data)
+      setShowCards(true)
+
+      setTimeout(() => {
+        downloadAllCards()
+      }, 1200)
+
+    } catch (err) {
+
+      console.error(err)
+
+      Swal.fire({
+        icon: "error",
+        title: "Gagal mengambil data pesanan",
+        text: "Silakan coba lagi nanti"
+      })
+
+    }
+
+  }
+
+  if (!mounted) return null
+
+
 
   return (
     <div className="min-h-screen bg-white">
 
-      {/* NAVBAR */}
-      <nav className="px-6 md:px-12 py-3 border-b border-gray-200 flex items-center justify-between bg-white sticky top-0 z-50">
-        <img src="img/dpmama2.svg" alt="dapoer mama" className="dpmama-logo"/>
-        
-        {loggedIn ? (
-          <span
+     {/* NAVBAR */}
+<nav className="px-6 md:px-12 py-3 border-b border-gray-200 flex items-center justify-between bg-white sticky top-0 z-50">
+  <img src="/img/dpmama2.svg" alt="dapoer mama" className="dpmama-logo" />
+
+  {/* Desktop Menu */}
+  <div className="hidden md:flex items-center gap-4">
+    {loggedIn ? (
+      <>
+        <button
+          onClick={loadOrders}
+          className="text-gray-700 font-semibold hover:text-orange-500 rounded"
+        >
+          Download
+        </button>
+
+        <span
           className="text-gray-700 font-semibold cursor-pointer hover:text-orange-500"
           onClick={() =>
             window.open(
@@ -121,67 +238,196 @@ export default function Home() {
         >
           Admin
         </span>
-        ) : (
-          <div className="relative">
-          <button
-            className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-orange-600"
-            onClick={() => setShowLogin(!showLogin)}
-          >
-            <LogIn className="w-5 h-5" />
-            <span className="hidden sm:inline">Admin</span> {/* teks hanya muncul di layar >= sm */}
-          </button>
+      </>
+    ) : (
+      <button
+        className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-orange-600"
+        onClick={() => setShowLogin(!showLogin)}
+      >
+        <LogIn className="w-5 h-5" />
+        <span className="hidden sm:inline">Admin</span>
+      </button>
+    )}
+  </div>
 
-            {showLogin && (
-            <div className="fixed inset-0 flex items-center justify-center  z-50">
-              {/* overlay */}
-              <div 
-                className="absolute inset-0 bg-black opacity-40" 
-                onClick={() => setShowLogin(false)}
-              ></div>
+  {/* Mobile Hamburger */}
+  <div className="md:hidden relative">
+    <button
+      className="flex flex-col gap-1 w-6 h-6 justify-center items-center"
+      onClick={() => setShowMobileMenu(!showMobileMenu)}
+    >
+      <span className="block h-0.5 w-full bg-gray-800"></span>
+      <span className="block h-0.5 w-full bg-gray-800"></span>
+      <span className="block h-0.5 w-full bg-gray-800"></span>
+    </button>
 
-              {/* modal */}
-              <div className="relative bg-white rounded-xl shadow-xl p-8 w-80 max-w-sm z-50">
-                <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">Admin Login</h2>
-                
-                <input
-                  type="text"
-                  placeholder="Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  autoFocus
-                  className="px-3 py-2 mb-3 w-full border border-gray-300 text-gray-700 placeholder:text-gray-500 p-3 rounded-xl transition-all focus:border-[var(--primary-color)] focus:ring-2 focus:ring-[var(--primary-color)] focus:outline-none"
-                  onKeyDown={(e) => e.key === "Enter" && handleLogin()} // enter di password langsung login
-                />
-                
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="px-3 py-2 mb-3 w-full border border-gray-300 text-gray-700 placeholder:text-gray-500 p-3 rounded-xl transition-all focus:border-[var(--primary-color)] focus:ring-2 focus:ring-[var(--primary-color)] focus:outline-none"
-                  onKeyDown={(e) => e.key === "Enter" && handleLogin()} // enter di username juga bisa
-                />
+    {/* Mobile Menu */}
+    {showMobileMenu && (
+  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg flex flex-col py-2 z-50">
+    {loggedIn ? (
+      <>
+        <button
+          onClick={loadOrders}
+          className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+        >
+          
+          Download
+        </button>
 
-                <button
-                  onClick={handleLogin}
-                  className="bg-primary text-white px-4 py-2 w-full rounded-xl hover:bg-orange-600 transition"
-                >
-                  Login
-                </button>
+        <button
+          onClick={() =>
+            window.open(
+              "https://docs.google.com/spreadsheets/d/1SY-9u7YXVpwnXiHEQgyY9paBdbn8-PtyaKbTLe86Yuk",
+              "_blank"
+            )
+          }
+          className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 text-left"
+        >
+          Admin
+        </button>
+      </>
+    ) : (
+      <button
+        className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-orange-600"
+        onClick={() => {
+          setShowLogin(true);
+          setShowMobileMenu(false); // tutup dropdown setelah klik
+        }}
+      >
+        <LogIn className="w-5 h-5" />
+        Admin
+      </button>
+    )}
+  </div>
+)}
+  </div>
 
-                <button
-                  onClick={() => setShowLogin(false)}
-                  className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-                >
-                  ✕
-                </button>
+  {/* LOGIN MODAL */}
+  {showLogin && (
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      {/* overlay */}
+      <div
+        className="absolute inset-0 bg-black opacity-40"
+        onClick={() => setShowLogin(false)}
+      ></div>
+
+      {/* modal */}
+      <div className="relative bg-white rounded-xl shadow-xl p-8 w-80 max-w-sm z-50">
+        <h2 className="text-xl font-semibold mb-4 text-center text-gray-800">
+          Admin Login
+        </h2>
+
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          autoFocus
+          className="px-3 py-2 mb-3 w-full border border-gray-300 text-gray-700 placeholder:text-gray-500 rounded-xl focus:border-[var(--primary-color)] focus:ring-2 focus:ring-[var(--primary-color)] focus:outline-none"
+          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="px-3 py-2 mb-3 w-full border border-gray-300 text-gray-700 placeholder:text-gray-500 rounded-xl focus:border-[var(--primary-color)] focus:ring-2 focus:ring-[var(--primary-color)] focus:outline-none"
+          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+        />
+
+        <button
+          onClick={handleLogin}
+          className="bg-primary text-white px-4 py-2 w-full rounded-xl hover:bg-orange-600 transition"
+        >
+          Login
+        </button>
+
+        <button
+          onClick={() => setShowLogin(false)}
+          className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  )}
+</nav>
+
+
+      {/* ORDER CARDS (hidden for download) */}
+      {showCards && (
+
+        <div className="absolute -left-[9999px]">
+
+          {orders.map((order, index) => {
+
+            const items = Object.entries(order)
+              .filter(([key, value]) =>
+                !["name", "phone", "total"].includes(key) &&
+                Number(value || 0) > 0
+              )
+
+            return (
+
+              <div
+                key={index}
+                ref={(el) => {
+                  cardRefs.current[index] = el
+                }}
+                className="bg-white p-6 w-[400px]"
+                style={{ color: "#FC9C07" }}
+              >
+
+                {/* Nama */}
+                <h2 className="text-xl font-bold">
+                  {order.name}
+                </h2>
+
+                {/* Nomor HP */}
+                <p className="mb-4">{order.phone}</p>
+
+                {/* List Pesanan */}
+                <div className="space-y-1">
+
+                  {items.map(([key, value]) => (
+
+                    <div key={key} className="flex justify-between">
+
+                      <span>
+                        {key
+                          .replace(/_/g, " ")
+                          .replace(/\b\w/g, (c) => c.toUpperCase())}
+                      </span>
+
+                      <span>{Number(value)}</span>
+
+                    </div>
+
+                  ))}
+
+                </div>
+
+                {/* Total */}
+                <div className="mt-4 pt-2 border-t font-bold flex justify-between">
+
+                  <span>Total :</span>
+
+                  <span>
+                    Rp. {Number(order.total).toLocaleString("id-ID")}
+                  </span>
+
+                </div>
+
               </div>
-            </div>
-          )}
 
-          </div>
-        )}
-      </nav>
+            )
+
+          })}
+
+        </div>
+
+      )}
 
       {/* CAROUSEL */}
       <Carousel />
@@ -220,5 +466,7 @@ export default function Home() {
         </div>
       </footer>
     </div>
+
   )
 }
+
