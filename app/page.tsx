@@ -44,24 +44,24 @@ export default function Home() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const cakeList: Cake[] = [
-    { id: 1, name: "nastar semprit - 500g", price: 80000, image: "img/nastarSemprit.png" },
-    { id: 2, name: "nastar jambu - 500g", price: 82500, image: "img/nastarJambu.png" },
-    { id: 3, name: "nastar keju - 500g", price: 85000, image: "img/nastarKeju.png" },
-    { id: 4, name: "nastar keranjang - 500g", price: 82500, image: "img/keranjang.png" },
-    { id: 5, name: "black nastar - 500g", price: 85000, image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgs80fucX8YrRIIfpY6RztHqpBesAuZre0zO09pXMP97qMrednqPRQIGJO4neyViW0pW59wUF_TdXxohdgcHtQzuNYcaUQA-ZPV-Nj1GnSagqdpQ9G-c2R06CHKUVDIUKKgvUiiid1COf5A/w1200-h630-p-k-no-nu/Resep+Membuat+Kue+Kering+Black+Nastar+Manggis+Yang+Lezat.jpg" },
-    { id: 6, name: "nastar rainbow - 500g", price: 82500, image: "img/nastarRainbow.png" },
-    { id: 7, name: "nastar cincin - 500g", price: 82500, image: "img/cincin.png" },
-    { id: 8, name: "putri salju - 500g", price: 82500, image: "https://i.pinimg.com/1200x/ff/23/05/ff230589488c2de895d4e190f6501519.jpg" },
-    { id: 9, name: "kastengel - 500g", price: 85000, image: "https://i.pinimg.com/736x/1a/7b/43/1a7b43f413902f15d8acdcb4080167f9.jpg" },
-    { id: 10, name: "kacang hati - 500g", price: 82500, image: "https://i.pinimg.com/1200x/54/3d/7d/543d7dffa0cfdb3aaa5b6e4812ef6e4e.jpg" },
-    { id: 11, name: "sagu keju - 500g", price: 77500, image: "img/kueSagu.png" },
-    { id: 12, name: "coklat mete - 500g", price: 85000, image: "img/coklatMete.jpg" },
-    { id: 13, name: "stik keju - 1kg", price: 90000, image: "img/stikKeju.jpg" },
-    { id: 14, name: "kue bawang - 1kg", price: 90000, image: "https://i.pinimg.com/1200x/e3/22/06/e32206b1ebbc475527e822638541d1cf.jpg" },
-    { id: 15, name: "telur gabus - 1kg", price: 105000, image: "https://i.pinimg.com/736x/43/76/56/437656bceaa5bd2cf0a1bed2752d0a76.jpg" },
-    { id: 16, name: "biji ketapang - 500g", price: 55000, image: "https://i.pinimg.com/736x/f4/91/e5/f491e58dcb05bced16feda037fad03c9.jpg" },
-    { id: 17, name: "kacang umpet pedas - 500g", price: 45000, image: "https://i.pinimg.com/1200x/d1/82/4d/d1824da486a99bbf878097bcd50f861d.jpg" },
-    { id: 18, name: "kacang umpet coklat - 500g", price: 45000, image: "https://i.pinimg.com/736x/cf/53/9e/cf539edbb8aa21beb88dd8c49e930030.jpg" }
+    { id: 1, name: "nastar semprit - 500g", price: 85000, image: "img/nastarSemprit.png" },
+    { id: 2, name: "nastar jambu - 500g", price: 87500, image: "img/nastarJambu.png" },
+    { id: 3, name: "nastar keju - 500g", price: 90000, image: "img/nastarKeju.png" },
+    { id: 4, name: "nastar keranjang - 500g", price: 87500, image: "img/keranjang.png" },
+    { id: 5, name: "black nastar - 500g", price: 90000, image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgs80fucX8YrRIIfpY6RztHqpBesAuZre0zO09pXMP97qMrednqPRQIGJO4neyViW0pW59wUF_TdXxohdgcHtQzuNYcaUQA-ZPV-Nj1GnSagqdpQ9G-c2R06CHKUVDIUKKgvUiiid1COf5A/w1200-h630-p-k-no-nu/Resep+Membuat+Kue+Kering+Black+Nastar+Manggis+Yang+Lezat.jpg" },
+    { id: 6, name: "nastar rainbow - 500g", price: 87500, image: "img/nastarRainbow.png" },
+    { id: 7, name: "nastar cincin - 500g", price: 87500, image: "img/cincin.png" },
+    { id: 8, name: "putri salju - 500g", price: 87500, image: "https://i.pinimg.com/1200x/ff/23/05/ff230589488c2de895d4e190f6501519.jpg" },
+    { id: 9, name: "kastengel - 500g", price: 90000, image: "https://i.pinimg.com/736x/1a/7b/43/1a7b43f413902f15d8acdcb4080167f9.jpg" },
+    { id: 10, name: "kacang hati - 500g", price: 87500, image: "https://i.pinimg.com/1200x/54/3d/7d/543d7dffa0cfdb3aaa5b6e4812ef6e4e.jpg" },
+    { id: 11, name: "sagu keju - 500g", price: 82500, image: "img/kueSagu.png" },
+    { id: 12, name: "coklat mete - 500g", price: 90000, image: "img/coklatMete.jpg" },
+    { id: 13, name: "stik keju - 1kg", price: 95000, image: "img/stikKeju.jpg" },
+    { id: 14, name: "kue bawang - 1kg", price: 95000, image: "https://i.pinimg.com/1200x/e3/22/06/e32206b1ebbc475527e822638541d1cf.jpg" },
+    { id: 15, name: "telur gabus - 1kg", price: 110000, image: "https://i.pinimg.com/736x/43/76/56/437656bceaa5bd2cf0a1bed2752d0a76.jpg" },
+    { id: 16, name: "biji ketapang - 500g", price: 60000, image: "https://i.pinimg.com/736x/f4/91/e5/f491e58dcb05bced16feda037fad03c9.jpg" },
+    { id: 17, name: "kacang umpet pedas - 500g", price: 50000, image: "https://i.pinimg.com/1200x/d1/82/4d/d1824da486a99bbf878097bcd50f861d.jpg" },
+    { id: 18, name: "kacang umpet coklat - 500g", price: 50000, image: "https://i.pinimg.com/736x/cf/53/9e/cf539edbb8aa21beb88dd8c49e930030.jpg" }
   ]
 
   useEffect(() => {
